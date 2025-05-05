@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Menstrual Cycle Prediction Model Carousel</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.0.0/chartjs-plugin-datalabels.min.js"></script>
+    <style>
+      body {
+        font-family: "Arial", sans-serif;
+        background-color: #f5f9fc;
+        margin: 0;
+        padding: 0;
+        color: #2c3e50;
+        overflow: hidden;
+      }
+      .carousel-container {
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+        position: relative;
+      }
+      .carousel-slide {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        opacity: 0;
+        transition: opacity 1.5s ease-in-out;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        box-sizing: border-box;
+      }
+      .carousel-slide.active {
+        opacity: 1;
+        z-index: 1;
+      }
+      .chart-container {
+        width: 90%;
+        max-width: 1000px;
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+        padding: 20px;
+        margin-bottom: 20px;
+      }
+      h1 {
+        color: #2980b9;
+        text-align: center;
+        margin-bottom: 10px;
+        font-size: 28px;
+      }
+      h2 {
+        color: #3498db;
+        text-align: center;
+        margin-bottom: 30px;
+        font-size: 24px;
+      }
+      .slide-indicator {
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 10px;
+      }
+      .dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background-color: #bdc3c7;
+        cursor: pointer;
+      }
+      .dot.active {
+        background-color: #3498db;
+      }
+      .key-findings {
+        background-color: rgba(255, 255, 255, 0.9);
+        border-radius: 10px;
+        padding: 15px 25px;
+        max-width: 800px;
+        margin: 0 auto;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      }
+      .key-findings h3 {
+        color: #2980b9;
+        margin-bottom: 10px;
+      }
+      .key-findings ul {
+        text-align: left;
+        padding-left: 20px;
+      }
+      .key-findings li {
+        margin-bottom: 8px;
+        line-height: 1.5;
+      }
+      .footer {
+        position: absolute;
+        bottom: 10px;
+        width: 100%;
+        text-align: center;
+        font-size: 14px;
+        color: #7f8c8d;
+      }
+      .controls {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        display: flex;
+        gap: 10px;
+        z-index: 10;
+      }
+      .control-btn {
+        background-color: #3498db;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        padding: 8px 12px;
+        cursor: pointer;
+        font-size: 14px;
+      }
+      .control-btn:hover {
+        background-color: #2980b9;
+      }
+      .paused {
+        background-color: #e74c3c;
+      }
+      /* Promotional Styles */
+      .promo-slide {
+        background: linear-gradient(135deg, #3498db, #8e44ad);
+        color: white;
+        text-align: center;
+      }
+      .promo-container {
+        width: 90%;
+        max-width: 800px;
+        background-color: rgba(255, 255, 255, 0.9);
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        padding: 30px;
+        text-align: center;
+        color: #333;
+      }
+      .promo-title {
+        color: #8e44ad;
+        font-size: 36px;
+        margin-bottom: 20px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+      .promo-subtitle {
+        color: #2980b9;
+        font-size: 24px;
+        margin-bottom: 30px;
+      }
+      .promo-content {
+        margin-bottom: 30px;
+        font-size: 18px;
+        line-height: 1.6;
+      }
+      .promo-button {
+        background-color: #8e44ad;
+        color: white;
+        border: none;
+        border-radius: 30px;
+        padding: 12px 35px;
+        font-size: 18px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 20px;
+        text-transform: uppercase;
+      }
+      .promo-button:hover {
+        background-color: #9b59b6;
+        transform: scale(1.05);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      }
+      .phone-mockup {
+        max-width: 250px;
+        margin: 20px auto;
+      }
+      .game-mockup {
+        width: 100%;
+        max-width: 400px;
+        border-radius: 10px;
+        margin: 20px auto;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="carousel-container">
+      <!-- Introduction Slide -->
+      <div class="carousel-slide" id="slide0">
+        <h1>Menstrual Cycle Prediction</h1>
+        <h2>Model Performance Analysis</h2>
+        <div class="key-findings">
+          <h3>Research Overview</h3>
+          <ul>
+            <li>
+              This research compares three prediction models for menstrual cycle
+              patterns
+            </li>
+            <li>
+              Models evaluated: Ovy Health App, Random Forest, and LSTM Neural
+              Network
+            </li>
+            <li>
+              Features analyzed: Cycle Length, Ovulation Day, and Menses Length
+            </li>
+            <li>
+              Performance metrics: Strict Accuracy, Lenient Accuracy, and Mean
+              Absolute Error
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- PROMO 1: Lucky Draw -->
+      <div class="carousel-slide promo-slide" id="slide-promo1">
+        <div class="promo-container">
+          <h1 class="promo-title">💫 Win a Smartphone! 💫</h1>
+          <h2 class="promo-subtitle">Join Our Lucky Draw Today</h2>
+          <img src="./assets/phone.png" alt="Smartphone" class="phone-mockup" />
+          <p class="promo-content">
+            Enter our exclusive giveaway and stand a chance to win a smartphone!
+          </p>
+          <!-- <button class="promo-button">Enter Now</button> -->
+        </div>
+      </div>
+
+      <!-- Length of Cycle - Accuracy -->
+      <div class="carousel-slide" id="slide1">
+        <h1>Length of Cycle</h1>
+        <h2>Prediction Accuracy</h2>
+        <div class="chart-container">
+          <canvas id="cycleAccuracyChart"></canvas>
+        </div>
+        <div class="key-findings">
+          <h3>Key Findings</h3>
+          <ul>
+            <li>
+              Random Forest achieves the highest accuracy (37.0% strict, 71.7%
+              lenient)
+            </li>
+            <li>
+              LSTM performance (17.1% strict, 47.4% lenient) surpasses the
+              commercial app
+            </li>
+            <li>
+              Ovy app has the lowest accuracy (14.3% strict, 40.6% lenient)
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- PROMO 2: Play Our Game -->
+      <div class="carousel-slide promo-slide" id="slide-promo2">
+        <div class="promo-container">
+          <h1 class="promo-title">🎮 Health Defender Game 🎮</h1>
+          <h2 class="promo-subtitle">Learn While You Play!</h2>
+          <img
+            src="./assets/game.jpg"
+            alt="Game Screenshot"
+            class="game-mockup"
+          />
+          <p class="promo-content">
+            Play Our game!<br />
+            Earn points,compete with friends.
+          </p>
+          <!-- <button class="promo-button">Play Now</button> -->
+        </div>
+      </div>
+
+      <!-- Length of Cycle - MAE -->
+      <div class="carousel-slide" id="slide2">
+        <h1>Length of Cycle</h1>
+        <h2>Mean Absolute Error</h2>
+        <div class="chart-container">
+          <canvas id="cycleMaeChart"></canvas>
+        </div>
+        <div class="key-findings">
+          <h3>Key Findings</h3>
+          <ul>
+            <li>
+              Random Forest shows significantly lower error (MAE: 1.14 days)
+            </li>
+            <li>LSTM has moderate error (MAE: 2.13 days)</li>
+            <li>Ovy app has the highest error (MAE: 2.75 days)</li>
+            <li>Lower MAE values indicate more precise predictions</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Ovulation Day - Accuracy -->
+      <div class="carousel-slide" id="slide3">
+        <h1>Ovulation Day</h1>
+        <h2>Prediction Accuracy</h2>
+        <div class="chart-container">
+          <canvas id="ovulationAccuracyChart"></canvas>
+        </div>
+        <div class="key-findings">
+          <h3>Key Findings</h3>
+          <ul>
+            <li>
+              Random Forest significantly outperforms other models (40.9%
+              strict, 80.2% lenient)
+            </li>
+            <li>
+              LSTM and Ovy app perform similarly for strict accuracy (19.9% vs
+              12.9%)
+            </li>
+            <li>
+              All models show better performance with lenient accuracy metrics
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- PROMO 3: Try Our App -->
+      <div class="carousel-slide promo-slide" id="slide-promo3">
+        <div class="promo-container">
+          <h1 class="promo-title">📱 Try Our App Today! 📱</h1>
+          <h2 class="promo-subtitle">The Most Accurate Cycle Predictor</h2>
+          <div style="display: flex; justify-content: center">
+            <img
+              src="./assets/app.jpg"
+              alt="App Screenshot 1"
+              style="margin: 0 10px"
+            />
+          </div>
+          <p class="promo-content">
+            Our app uses advanced Machine learning to predict your cycle with unmatched
+            accuracy.
+          </p>
+          <button class="promo-button">Download Now</button>
+        </div>
+      </div>
+
+      <!-- Ovulation Day - MAE -->
+      <div class="carousel-slide" id="slide4">
+        <h1>Ovulation Day</h1>
+        <h2>Mean Absolute Error</h2>
+        <div class="chart-container">
+          <canvas id="ovulationMaeChart"></canvas>
+        </div>
+        <div class="key-findings">
+          <h3>Key Findings</h3>
+          <ul>
+            <li>
+              Random Forest achieves near 1-day precision (MAE: 0.94 days)
+            </li>
+            <li>LSTM shows moderate error (MAE: 1.90 days)</li>
+            <li>Ovy app has the highest error (MAE: 2.23 days)</li>
+            <li>
+              Accurate ovulation prediction is crucial for fertility tracking
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Menses Length - Accuracy -->
+      <div class="carousel-slide" id="slide5">
+        <h1>Menses Length</h1>
+        <h2>Prediction Accuracy</h2>
+        <div class="chart-container">
+          <canvas id="mensesAccuracyChart"></canvas>
+        </div>
+        <div class="key-findings">
+          <h3>Key Findings</h3>
+          <ul>
+            <li>
+              All models perform better at predicting menses length than other
+              metrics
+            </li>
+            <li>
+              Random Forest achieves remarkable accuracy (75.7% strict, 96.3%
+              lenient)
+            </li>
+            <li>
+              Ovy app outperforms LSTM for this metric (47.3% vs 32.2% strict)
+            </li>
+            <li>Lenient accuracy exceeds 80% for all models</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Menses Length - MAE -->
+      <div class="carousel-slide" id="slide6">
+        <h1>Menses Length</h1>
+        <h2>Mean Absolute Error</h2>
+        <div class="chart-container">
+          <canvas id="mensesMaeChart"></canvas>
+        </div>
+        <div class="key-findings">
+          <h3>Key Findings</h3>
+          <ul>
+            <li>
+              Random Forest achieves exceptional precision (MAE: 0.29 days)
+            </li>
+            <li>Ovy app performs relatively well (MAE: 0.69 days)</li>
+            <li>LSTM has the highest error (MAE: 0.94 days)</li>
+            <li>
+              All models show lower error for menses length than other metrics
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Conclusion -->
+      <div class="carousel-slide" id="slide7">
+        <h1>Conclusion</h1>
+        <h2>Model Comparison Summary</h2>
+        <div class="key-findings" style="max-width: 850px">
+          <h3>Research Findings</h3>
+          <ul>
+            <li>
+              Random Forest consistently outperforms other models across all
+              metrics
+            </li>
+            <li>
+              Machine learning models demonstrate significant improvements over
+              commercial app
+            </li>
+            <li>
+              Menses length is the most predictable metric across all models
+            </li>
+            <li>
+              Lenient accuracy (±1 day) shows substantially better results than
+              strict accuracy
+            </li>
+            <li>
+              These findings suggest potential for improved menstrual health
+              tracking using machine learning approaches
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Slide indicators -->
+      <div class="slide-indicator"></div>
+
+      <!-- Controls -->
+      <div class="controls">
+        <button class="control-btn" id="toggleBtn">Show: All Slides</button>
+        <button class="control-btn" id="pauseBtn">Pause</button>
+        <button class="control-btn" id="speedBtn">Speed: Normal</button>
+        <button class="control-btn" id="prevBtn">Prev</button>
+        <button class="control-btn" id="nextBtn">Next</button>
+      </div>
+
+      <!-- <div class="footer">
+            © Thesis Exhibition 2025
+        </div> -->
+    </div>
+
+    <script>
+      // Register Chart.js plugin
+      Chart.register(ChartDataLabels);
+
+      // Data from your Python code
+      const data = {
+        "Length of Cycle": {
+          strict: [14.25, 37.02, 17.11],
+          lenient: [40.55, 71.68, 47.35],
+          mae: [2.75, 1.14, 2.13],
+        },
+        "Ovulation Day": {
+          strict: [12.92, 40.86, 19.91],
+          lenient: [49.85, 80.24, 49.41],
+          mae: [2.23, 0.94, 1.9],
+        },
+        "Menses Length": {
+          strict: [47.34, 75.66, 32.15],
+          lenient: [89.36, 96.31, 81.86],
+          mae: [0.69, 0.29, 0.94],
+        },
+      };
+
+      const models = ["Ovy Health App", "Random Forest", "LSTM"];
+
+      // Create color palette based on light blue theme
+      const blueShades = [
+        "rgba(88, 165, 215, 0.8)", // Primary blue
+        "rgba(136, 191, 232, 0.8)", // Lighter blue
+        "rgba(54, 127, 169, 0.8)", // Darker blue
+      ];
+
+      const orangeShades = [
+        "rgba(242, 156, 56, 0.7)", // Primary orange
+        "rgba(250, 190, 88, 0.7)", // Lighter orange
+        "rgba(214, 126, 31, 0.7)", // Darker orange
+      ];
+
+      // Carousel functionality
+      let currentSlideIndex = 0;
+      const slides = document.querySelectorAll(".carousel-slide");
+      const totalSlides = slides.length;
+      let slideInterval;
+      let slideSpeed = 8000; // 8 seconds by default
+      let isPaused = false;
+      let showPromo = true;
+      let showEducational = true;
+
+      // Create indicator dots
+      const slideIndicator = document.querySelector(".slide-indicator");
+      for (let i = 0; i < totalSlides; i++) {
+        const dot = document.createElement("div");
+        dot.classList.add("dot");
+        dot.addEventListener("click", () => goToSlide(i));
+        slideIndicator.appendChild(dot);
+      }
+      const dots = document.querySelectorAll(".dot");
+
+      // Initialize all charts
+      function initCharts() {
+        createAccuracyChart("cycleAccuracyChart", "Length of Cycle");
+        createMaeChart("cycleMaeChart", "Length of Cycle");
+        createAccuracyChart("ovulationAccuracyChart", "Ovulation Day");
+        createMaeChart("ovulationMaeChart", "Ovulation Day");
+        createAccuracyChart("mensesAccuracyChart", "Menses Length");
+        createMaeChart("mensesMaeChart", "Menses Length");
+      }
+
+      function toggleSlideTypes() {
+  const toggleBtn = document.getElementById("toggleBtn");
+  
+  // Cycle through the possible states
+  if (showPromo && showEducational) {
+    // Switch to educational only
+    showPromo = false;
+    showEducational = true;
+    toggleBtn.textContent = "Show: Educational Only";
+  } else if (!showPromo && showEducational) {
+    // Switch to promotional only
+    showPromo = true;
+    showEducational = false;
+    toggleBtn.textContent = "Show: Promotional Only";
+  } else {
+    // Switch back to all slides
+    showPromo = true;
+    showEducational = true;
+    toggleBtn.textContent = "Show: All Slides";
+  }
+  
+  // Update which slides are available
+  updateAvailableSlides();
+  
+  // Go to the next available slide
+  goToNextAvailableSlide();
+  
+  // Reset timer
+  resetTimer();
+}
+function goToNextAvailableSlide() {
+  const allSlides = document.querySelectorAll(".carousel-slide");
+  let nextAvailableIndex = 0;
+  
+  // Find the next available slide
+  for (let i = 0; i < allSlides.length; i++) {
+    if (allSlides[i].style.display !== "none") {
+      nextAvailableIndex = i;
+      break;
+    }
+  }
+  
+  showSlide(nextAvailableIndex);
+}
+
+function updateAvailableSlides() {
+  // Get all slides
+  const allSlides = document.querySelectorAll(".carousel-slide");
+  
+  allSlides.forEach((slide) => {
+    const isPromo = slide.id.includes("promo");
+    
+    if (isPromo && !showPromo) {
+      // Hide promo slides if promos are disabled
+      slide.style.display = "none";
+    } else if (!isPromo && !showEducational) {
+      // Hide educational slides if educational are disabled
+      slide.style.display = "none";
+    } else {
+      // Show the slide
+      slide.style.display = "";
+    }
+  });
+  
+  // Update the dots indicator
+  updateDots();
+}
+
+function updateDots() {
+  const dots = document.querySelectorAll(".dot");
+  const allSlides = document.querySelectorAll(".carousel-slide");
+  
+  // Hide all dots first
+  dots.forEach((dot, i) => {
+    dot.style.display = "none";
+  });
+  
+  // Show dots only for visible slides
+  let visibleDotIndex = 0;
+  allSlides.forEach((slide, i) => {
+    if (slide.style.display !== "none") {
+      dots[i].style.display = "";
+      visibleDotIndex++;
+    }
+  });
+}
+
+      function createAccuracyChart(canvasId, target) {
+        const ctx = document.getElementById(canvasId).getContext("2d");
+        new Chart(ctx, {
+          type: "bar",
+          data: {
+            labels: models,
+            datasets: [
+              {
+                label: "Strict Accuracy (%)",
+                data: data[target].strict,
+                backgroundColor: blueShades,
+                borderColor: blueShades.map((color) =>
+                  color.replace("0.8", "1")
+                ),
+                borderWidth: 1,
+              },
+              {
+                label: "Lenient Accuracy (%)",
+                data: data[target].lenient,
+                backgroundColor: orangeShades,
+                borderColor: orangeShades.map((color) =>
+                  color.replace("0.7", "1")
+                ),
+                borderWidth: 1,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: "top",
+              },
+              datalabels: {
+                anchor: "end",
+                align: "top",
+                formatter: function (value) {
+                  return value.toFixed(1) + "%";
+                },
+                font: {
+                  weight: "bold",
+                  size: 12,
+                },
+                color: "#2c3e50",
+              },
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                max: 100,
+                title: {
+                  display: true,
+                  text: "Accuracy (%)",
+                  font: {
+                    weight: "bold",
+                  },
+                },
+              },
+            },
+          },
+        });
+      }
+
+      function createMaeChart(canvasId, target) {
+        const ctx = document.getElementById(canvasId).getContext("2d");
+        new Chart(ctx, {
+          type: "bar",
+          data: {
+            labels: models,
+            datasets: [
+              {
+                label: "Mean Absolute Error (days)",
+                data: data[target].mae,
+                backgroundColor: blueShades,
+                borderColor: blueShades.map((color) =>
+                  color.replace("0.8", "1")
+                ),
+                borderWidth: 1,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: "top",
+              },
+              datalabels: {
+                anchor: "end",
+                align: "top",
+                formatter: function (value) {
+                  return value.toFixed(2);
+                },
+                font: {
+                  weight: "bold",
+                  size: 12,
+                },
+                color: "#2c3e50",
+              },
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                title: {
+                  display: true,
+                  text: "Mean Absolute Error (days)",
+                  font: {
+                    weight: "bold",
+                  },
+                },
+              },
+            },
+          },
+        });
+      }
+
+      function showSlide(index) {
+        slides.forEach((slide, i) => {
+          slide.classList.remove("active");
+        });
+        dots.forEach((dot, i) => {
+          dot.classList.remove("active");
+        });
+
+        slides[index].classList.add("active");
+        dots[index].classList.add("active");
+        currentSlideIndex = index;
+      }
+
+      function nextSlide() {
+  if (isPaused) return;
+  
+  const allSlides = document.querySelectorAll(".carousel-slide");
+  let nextIndex = (currentSlideIndex + 1) % totalSlides;
+  
+  // Keep looking for the next visible slide
+  while (allSlides[nextIndex].style.display === "none") {
+    nextIndex = (nextIndex + 1) % totalSlides;
+    
+    // Safety check to prevent infinite loop
+    if (nextIndex === currentSlideIndex) break;
+  }
+  
+  showSlide(nextIndex);
+}
+
+      function goToSlide(index) {
+        showSlide(index);
+        resetTimer();
+      }
+
+      function resetTimer() {
+        clearInterval(slideInterval);
+        slideInterval = setInterval(nextSlide, slideSpeed);
+      }
+
+      function togglePause() {
+        isPaused = !isPaused;
+        const pauseBtn = document.getElementById("pauseBtn");
+
+        if (isPaused) {
+          pauseBtn.textContent = "Play";
+          pauseBtn.classList.add("paused");
+          clearInterval(slideInterval);
+        } else {
+          pauseBtn.textContent = "Pause";
+          pauseBtn.classList.remove("paused");
+          slideInterval = setInterval(nextSlide, slideSpeed);
+        }
+      }
+
+      document.getElementById("nextBtn").addEventListener("click", function () {
+        const nextIndex = (currentSlideIndex + 1) % totalSlides;
+        showSlide(nextIndex);
+        resetTimer();
+      });
+
+      document.getElementById("prevBtn").addEventListener("click", function () {
+        const nextIndex = (currentSlideIndex - 1) % totalSlides;
+        showSlide(nextIndex);
+        resetTimer();
+      });
+
+      function changeSpeed() {
+        const speedBtn = document.getElementById("speedBtn");
+
+        if (slideSpeed === 8000) {
+          slideSpeed = 5000; // Fast
+          speedBtn.textContent = "Speed: Fast";
+        } else if (slideSpeed === 5000) {
+          slideSpeed = 12000; // Slow
+          speedBtn.textContent = "Speed: Slow";
+        } else {
+          slideSpeed = 8000; // Normal
+          speedBtn.textContent = "Speed: Normal";
+        }
+
+        resetTimer();
+      }
+
+      // Initialize the carousel
+      document.addEventListener("DOMContentLoaded", function () {
+        initCharts();
+        showSlide(0);
+        slideInterval = setInterval(nextSlide, slideSpeed);
+
+        // Set up control buttons
+        document
+          .getElementById("pauseBtn")
+          .addEventListener("click", togglePause);
+        document
+          .getElementById("speedBtn")
+          .addEventListener("click", changeSpeed);
+        document.getElementById("toggleBtn").addEventListener("click", toggleSlideTypes);
+      });
+    </script>
+  </body>
+</html>
