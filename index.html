@@ -7,20 +7,51 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.0.0/chartjs-plugin-datalabels.min.js"></script>
     <style>
-      body {
-        font-family: "Arial", sans-serif;
-        background-color: #f5f9fc;
+      @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap');
+      
+      :root {
+        --primary: #6a5acd;
+        --primary-light: #8677e0;
+        --primary-dark: #5647b9;
+        --secondary: #ff6b6b;
+        --secondary-light: #ff8a8a;
+        --secondary-dark: #e54d4d;
+        --accent: #4ecdc4;
+        --text-dark: #2d3748;
+        --text-light: #718096;
+        --white: #ffffff;
+        --background: #f7fafc;
+        --success: #48bb78;
+        --warning: #f6ad55;
+        --error: #f56565;
+        --card-shadow: 0 8px 24px rgba(149, 157, 165, 0.1);
+        --transition: all 0.3s ease;
+      }
+
+      * {
+        box-sizing: border-box;
         margin: 0;
         padding: 0;
-        color: #2c3e50;
-        overflow: hidden;
       }
+
+      body {
+        font-family: 'Poppins', sans-serif;
+        background: var(--background);
+        margin: 0;
+        padding: 0;
+        color: var(--text-dark);
+        overflow: hidden;
+        line-height: 1.6;
+      }
+
       .carousel-container {
         width: 100vw;
         height: 100vh;
         overflow: hidden;
         position: relative;
+        background: linear-gradient(140deg, #f8f9fa 0%, #edf2f7 100%);
       }
+
       .carousel-slide {
         width: 100%;
         height: 100%;
@@ -33,80 +64,129 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        padding: 20px;
+        padding: 30px;
         box-sizing: border-box;
       }
+
       .carousel-slide.active {
         opacity: 1;
         z-index: 1;
       }
+
       .chart-container {
         width: 90%;
         max-width: 1000px;
-        background-color: white;
-        border-radius: 12px;
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-        padding: 20px;
-        margin-bottom: 20px;
+        background-color: var(--white);
+        border-radius: 16px;
+        box-shadow: var(--card-shadow);
+        padding: 30px;
+        margin-bottom: 30px;
+        transition: var(--transition);
       }
+
+      .chart-container:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 28px rgba(149, 157, 165, 0.15);
+      }
+
       h1 {
-        color: #2980b9;
+        font-family: 'Montserrat', sans-serif;
+        color: var(--primary);
         text-align: center;
-        margin-bottom: 10px;
-        font-size: 28px;
+        margin-bottom: 8px;
+        font-size: 32px;
+        font-weight: 700;
+        letter-spacing: -0.5px;
       }
+
       h2 {
-        color: #3498db;
+        font-family: 'Montserrat', sans-serif;
+        color: var(--text-light);
         text-align: center;
         margin-bottom: 30px;
-        font-size: 24px;
+        font-size: 22px;
+        font-weight: 500;
+        letter-spacing: -0.3px;
       }
+
       .slide-indicator {
         position: absolute;
-        bottom: 20px;
+        bottom: 30px;
         left: 50%;
         transform: translateX(-50%);
         display: flex;
-        gap: 10px;
+        gap: 12px;
+        padding: 12px 20px;
+        background: rgba(255, 255, 255, 0.8);
+        border-radius: 30px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
       }
+
       .dot {
-        width: 12px;
-        height: 12px;
+        width: 10px;
+        height: 10px;
         border-radius: 50%;
-        background-color: #bdc3c7;
+        background-color: #d1d5db;
         cursor: pointer;
+        transition: var(--transition);
       }
+
       .dot.active {
-        background-color: #3498db;
+        background-color: var(--primary);
+        transform: scale(1.3);
       }
+
       .key-findings {
-        background-color: rgba(255, 255, 255, 0.9);
-        border-radius: 10px;
-        padding: 15px 25px;
+        background-color: var(--white);
+        border-radius: 16px;
+        padding: 24px 32px;
         max-width: 800px;
         margin: 0 auto;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        box-shadow: var(--card-shadow);
+        border-left: 5px solid var(--primary);
+        transition: var(--transition);
       }
+
+      .key-findings:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 28px rgba(149, 157, 165, 0.15);
+      }
+
       .key-findings h3 {
-        color: #2980b9;
-        margin-bottom: 10px;
+        color: var(--primary);
+        margin-bottom: 15px;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 600;
+        font-size: 20px;
       }
+
       .key-findings ul {
         text-align: left;
         padding-left: 20px;
       }
+
       .key-findings li {
-        margin-bottom: 8px;
-        line-height: 1.5;
+        margin-bottom: 12px;
+        line-height: 1.6;
+        position: relative;
+        padding-left: 5px;
       }
+
+      .key-findings li::marker {
+        color: var(--primary);
+        font-weight: bold;
+      }
+
       .footer {
         position: absolute;
-        bottom: 10px;
+        bottom: 15px;
         width: 100%;
         text-align: center;
         font-size: 14px;
-        color: #7f8c8d;
+        color: var(--text-light);
+        z-index: 5;
       }
+
       .controls {
         position: absolute;
         top: 20px;
@@ -115,87 +195,252 @@
         gap: 10px;
         z-index: 10;
       }
+
       .control-btn {
-        background-color: #3498db;
-        color: white;
+        background-color: var(--primary);
+        color: var(--white);
         border: none;
-        border-radius: 4px;
-        padding: 8px 12px;
+        border-radius: 8px;
+        padding: 10px 16px;
         cursor: pointer;
         font-size: 14px;
+        font-weight: 500;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        transition: var(--transition);
+        font-family: 'Poppins', sans-serif;
       }
+
       .control-btn:hover {
-        background-color: #2980b9;
+        background-color: var(--primary-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
       }
+
+      .control-btn:active {
+        transform: translateY(0);
+      }
+
       .paused {
-        background-color: #e74c3c;
+        background-color: var(--secondary);
       }
-      /* Promotional Styles */
+
+      .paused:hover {
+        background-color: var(--secondary-dark);
+      }
+
+      /* Promotional Slides */
       .promo-slide {
-        background: linear-gradient(135deg, #3498db, #8e44ad);
-        color: white;
+        background: linear-gradient(135deg, var(--primary), #9381ff);
+        color: var(--white);
         text-align: center;
       }
+
       .promo-container {
         width: 90%;
-        max-width: 800px;
-        background-color: rgba(255, 255, 255, 0.9);
-        border-radius: 15px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-        padding: 30px;
+        max-width: 850px;
+        background-color: rgba(255, 255, 255, 0.95);
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        padding: 40px;
         text-align: center;
-        color: #333;
+        color: var(--text-dark);
+        backdrop-filter: blur(5px);
       }
+
       .promo-title {
-        color: #8e44ad;
-        font-size: 36px;
-        margin-bottom: 20px;
+        color: var(--primary);
+        font-size: 38px;
+        margin-bottom: 15px;
         text-transform: uppercase;
         letter-spacing: 1px;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 700;
       }
+
       .promo-subtitle {
-        color: #2980b9;
-        font-size: 24px;
+        color: var(--text-light);
+        font-size: 22px;
         margin-bottom: 30px;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 500;
       }
+
       .promo-content {
         margin-bottom: 30px;
         font-size: 18px;
         line-height: 1.6;
       }
+
       .promo-button {
-        background-color: #8e44ad;
+        background-color: var(--primary);
         color: white;
         border: none;
         border-radius: 30px;
-        padding: 12px 35px;
+        padding: 14px 40px;
         font-size: 18px;
-        font-weight: bold;
+        font-weight: 600;
         cursor: pointer;
         transition: all 0.3s ease;
         margin-top: 20px;
         text-transform: uppercase;
+        font-family: 'Poppins', sans-serif;
+        box-shadow: 0 5px 15px rgba(106, 90, 205, 0.3);
       }
+
       .promo-button:hover {
-        background-color: #9b59b6;
-        transform: scale(1.05);
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        background-color: var(--primary-dark);
+        transform: scale(1.05) translateY(-3px);
+        box-shadow: 0 8px 20px rgba(106, 90, 205, 0.4);
       }
+
       .phone-mockup {
         max-width: 250px;
         margin: 20px auto;
+        border-radius: 20px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        transition: var(--transition);
       }
+
+      .phone-mockup:hover {
+        transform: translateY(-8px) rotate(-3deg);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+      }
+
       .game-mockup {
         width: 100%;
         max-width: 400px;
-        border-radius: 10px;
+        border-radius: 15px;
         margin: 20px auto;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        transition: var(--transition);
+      }
+
+      .game-mockup:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+      }
+
+      /* Highlight important data */
+      .highlight-metric {
+        color: var(--primary);
+        font-weight: 600;
+      }
+
+      /* Introduction slide styles */
+      #slide0 .key-findings {
+        max-width: 850px;
+        border-left: none;
+        border-top: 5px solid var(--primary);
+      }
+
+      /* Conclusion slide styles */
+      #slide7 .key-findings {
+        max-width: 850px;
+        border-left: none;
+        background: linear-gradient(to bottom right, rgba(255, 255, 255, 0.95), rgba(237, 242, 247, 0.95));
+        border-top: 5px solid var(--success);
+      }
+
+      #slide7 h1 {
+        color: var(--success);
+      }
+
+      /* Progress bar */
+      .progress-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background-color: rgba(0,0,0,0.05);
+        z-index: 10;
+      }
+      
+      .progress-bar {
+        height: 100%;
+        background-color: var(--primary);
+        width: 0%;
+        transition: width 0.5s ease;
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 768px) {
+        .carousel-slide {
+          padding: 15px;
+        }
+        
+        .chart-container {
+          padding: 15px;
+        }
+        
+        h1 {
+          font-size: 24px;
+        }
+        
+        h2 {
+          font-size: 18px;
+        }
+        
+        .key-findings {
+          padding: 15px 20px;
+        }
+        
+        .key-findings h3 {
+          font-size: 18px;
+        }
+        
+        .controls {
+          top: 10px;
+          right: 10px;
+        }
+        
+        .control-btn {
+          padding: 8px 12px;
+          font-size: 12px;
+        }
+        
+        .promo-title {
+          font-size: 28px;
+        }
+        
+        .promo-subtitle {
+          font-size: 18px;
+        }
+        
+        .promo-container {
+          padding: 25px;
+        }
+      }
+
+      /* Animation for entering slides */
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .carousel-slide.active .chart-container,
+      .carousel-slide.active .key-findings {
+        animation: fadeInUp 0.8s ease-out forwards;
+      }
+
+      .carousel-slide.active .key-findings {
+        animation-delay: 0.2s;
       }
     </style>
   </head>
   <body>
     <div class="carousel-container">
+      <!-- Progress bar -->
+      <div class="progress-container">
+        <div class="progress-bar"></div>
+      </div>
+      
       <!-- Introduction Slide -->
       <div class="carousel-slide" id="slide0">
         <h1>Menstrual Cycle Prediction</h1>
@@ -208,15 +453,15 @@
               patterns
             </li>
             <li>
-              Models evaluated: Ovy Health App, Random Forest, and LSTM Neural
-              Network
+              Models evaluated: <span class="highlight-metric">Ovy Health App</span>, <span class="highlight-metric">Random Forest</span>, and <span class="highlight-metric">LSTM Neural
+              Network</span>
             </li>
             <li>
-              Features analyzed: Cycle Length, Ovulation Day, and Menses Length
+              Features analyzed: <span class="highlight-metric">Cycle Length</span>, <span class="highlight-metric">Ovulation Day</span>, and <span class="highlight-metric">Menses Length</span>
             </li>
             <li>
-              Performance metrics: Strict Accuracy, Lenient Accuracy, and Mean
-              Absolute Error
+              Performance metrics: <span class="highlight-metric">Strict Accuracy</span>, <span class="highlight-metric">Lenient Accuracy</span>, and <span class="highlight-metric">Mean
+              Absolute Error</span>
             </li>
           </ul>
         </div>
@@ -246,15 +491,15 @@
           <h3>Key Findings</h3>
           <ul>
             <li>
-              Random Forest achieves the highest accuracy (37.0% strict, 71.7%
+              <span class="highlight-metric">Random Forest</span> achieves the highest accuracy (<span class="highlight-metric">37.0%</span> strict, <span class="highlight-metric">71.7%</span>
               lenient)
             </li>
             <li>
-              LSTM performance (17.1% strict, 47.4% lenient) surpasses the
+              <span class="highlight-metric">LSTM</span> performance (<span class="highlight-metric">17.1%</span> strict, <span class="highlight-metric">47.4%</span> lenient) surpasses the
               commercial app
             </li>
             <li>
-              Ovy app has the lowest accuracy (14.3% strict, 40.6% lenient)
+              <span class="highlight-metric">Ovy app</span> has the lowest accuracy (<span class="highlight-metric">14.3%</span> strict, <span class="highlight-metric">40.6%</span> lenient)
             </li>
           </ul>
         </div>
@@ -272,7 +517,7 @@
           />
           <p class="promo-content">
             Play Our game!<br />
-            Earn points,compete with friends.
+            Earn points, compete with friends.
           </p>
           <!-- <button class="promo-button">Play Now</button> -->
         </div>
@@ -289,10 +534,10 @@
           <h3>Key Findings</h3>
           <ul>
             <li>
-              Random Forest shows significantly lower error (MAE: 1.14 days)
+              <span class="highlight-metric">Random Forest</span> shows significantly lower error (MAE: <span class="highlight-metric">1.14 days</span>)
             </li>
-            <li>LSTM has moderate error (MAE: 2.13 days)</li>
-            <li>Ovy app has the highest error (MAE: 2.75 days)</li>
+            <li><span class="highlight-metric">LSTM</span> has moderate error (MAE: <span class="highlight-metric">2.13 days</span>)</li>
+            <li><span class="highlight-metric">Ovy app</span> has the highest error (MAE: <span class="highlight-metric">2.75 days</span>)</li>
             <li>Lower MAE values indicate more precise predictions</li>
           </ul>
         </div>
@@ -309,12 +554,12 @@
           <h3>Key Findings</h3>
           <ul>
             <li>
-              Random Forest significantly outperforms other models (40.9%
-              strict, 80.2% lenient)
+              <span class="highlight-metric">Random Forest</span> significantly outperforms other models (<span class="highlight-metric">40.9%</span>
+              strict, <span class="highlight-metric">80.2%</span> lenient)
             </li>
             <li>
-              LSTM and Ovy app perform similarly for strict accuracy (19.9% vs
-              12.9%)
+              <span class="highlight-metric">LSTM</span> and <span class="highlight-metric">Ovy app</span> perform similarly for strict accuracy (<span class="highlight-metric">19.9%</span> vs
+              <span class="highlight-metric">12.9%</span>)
             </li>
             <li>
               All models show better performance with lenient accuracy metrics
@@ -332,14 +577,15 @@
             <img
               src="./assets/app.jpg"
               alt="App Screenshot 1"
-              style="margin: 0 10px"
+              style="margin: 0 10px; border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.15);"
             />
           </div>
           <p class="promo-content">
-            Our app uses advanced Machine learning to predict your cycle with unmatched
-            accuracy.
+          </br>
+            Our app uses advanced Machine learning to predict your cycle with
+            unmatched accuracy.
           </p>
-          <button class="promo-button">Download Now</button>
+          <!-- <button class="promo-button">Download Now</button> -->
         </div>
       </div>
 
@@ -354,10 +600,10 @@
           <h3>Key Findings</h3>
           <ul>
             <li>
-              Random Forest achieves near 1-day precision (MAE: 0.94 days)
+              <span class="highlight-metric">Random Forest</span> achieves near 1-day precision (MAE: <span class="highlight-metric">0.94 days</span>)
             </li>
-            <li>LSTM shows moderate error (MAE: 1.90 days)</li>
-            <li>Ovy app has the highest error (MAE: 2.23 days)</li>
+            <li><span class="highlight-metric">LSTM</span> shows moderate error (MAE: <span class="highlight-metric">1.90 days</span>)</li>
+            <li><span class="highlight-metric">Ovy app</span> has the highest error (MAE: <span class="highlight-metric">2.23 days</span>)</li>
             <li>
               Accurate ovulation prediction is crucial for fertility tracking
             </li>
@@ -380,13 +626,13 @@
               metrics
             </li>
             <li>
-              Random Forest achieves remarkable accuracy (75.7% strict, 96.3%
+              <span class="highlight-metric">Random Forest</span> achieves remarkable accuracy (<span class="highlight-metric">75.7%</span> strict, <span class="highlight-metric">96.3%</span>
               lenient)
             </li>
             <li>
-              Ovy app outperforms LSTM for this metric (47.3% vs 32.2% strict)
+              <span class="highlight-metric">Ovy app</span> outperforms <span class="highlight-metric">LSTM</span> for this metric (<span class="highlight-metric">47.3%</span> vs <span class="highlight-metric">32.2%</span> strict)
             </li>
-            <li>Lenient accuracy exceeds 80% for all models</li>
+            <li>Lenient accuracy exceeds <span class="highlight-metric">80%</span> for all models</li>
           </ul>
         </div>
       </div>
@@ -402,10 +648,10 @@
           <h3>Key Findings</h3>
           <ul>
             <li>
-              Random Forest achieves exceptional precision (MAE: 0.29 days)
+              <span class="highlight-metric">Random Forest</span> achieves exceptional precision (MAE: <span class="highlight-metric">0.29 days</span>)
             </li>
-            <li>Ovy app performs relatively well (MAE: 0.69 days)</li>
-            <li>LSTM has the highest error (MAE: 0.94 days)</li>
+            <li><span class="highlight-metric">Ovy app</span> performs relatively well (MAE: <span class="highlight-metric">0.69 days</span>)</li>
+            <li><span class="highlight-metric">LSTM</span> has the highest error (MAE: <span class="highlight-metric">0.94 days</span>)</li>
             <li>
               All models show lower error for menses length than other metrics
             </li>
@@ -421,7 +667,7 @@
           <h3>Research Findings</h3>
           <ul>
             <li>
-              Random Forest consistently outperforms other models across all
+              <span class="highlight-metric">Random Forest</span> consistently outperforms other models across all
               metrics
             </li>
             <li>
@@ -429,7 +675,7 @@
               commercial app
             </li>
             <li>
-              Menses length is the most predictable metric across all models
+              <span class="highlight-metric">Menses length</span> is the most predictable metric across all models
             </li>
             <li>
               Lenient accuracy (±1 day) shows substantially better results than
@@ -456,10 +702,9 @@
       </div>
 
       <!-- <div class="footer">
-            © Thesis Exhibition 2025
-        </div> -->
+        © Thesis Exhibition 2025
+      </div> -->
     </div>
-
     <script>
       // Register Chart.js plugin
       Chart.register(ChartDataLabels);
@@ -529,91 +774,91 @@
       }
 
       function toggleSlideTypes() {
-  const toggleBtn = document.getElementById("toggleBtn");
-  
-  // Cycle through the possible states
-  if (showPromo && showEducational) {
-    // Switch to educational only
-    showPromo = false;
-    showEducational = true;
-    toggleBtn.textContent = "Show: Educational Only";
-  } else if (!showPromo && showEducational) {
-    // Switch to promotional only
-    showPromo = true;
-    showEducational = false;
-    toggleBtn.textContent = "Show: Promotional Only";
-  } else {
-    // Switch back to all slides
-    showPromo = true;
-    showEducational = true;
-    toggleBtn.textContent = "Show: All Slides";
-  }
-  
-  // Update which slides are available
-  updateAvailableSlides();
-  
-  // Go to the next available slide
-  goToNextAvailableSlide();
-  
-  // Reset timer
-  resetTimer();
-}
-function goToNextAvailableSlide() {
-  const allSlides = document.querySelectorAll(".carousel-slide");
-  let nextAvailableIndex = 0;
-  
-  // Find the next available slide
-  for (let i = 0; i < allSlides.length; i++) {
-    if (allSlides[i].style.display !== "none") {
-      nextAvailableIndex = i;
-      break;
-    }
-  }
-  
-  showSlide(nextAvailableIndex);
-}
+        const toggleBtn = document.getElementById("toggleBtn");
 
-function updateAvailableSlides() {
-  // Get all slides
-  const allSlides = document.querySelectorAll(".carousel-slide");
-  
-  allSlides.forEach((slide) => {
-    const isPromo = slide.id.includes("promo");
-    
-    if (isPromo && !showPromo) {
-      // Hide promo slides if promos are disabled
-      slide.style.display = "none";
-    } else if (!isPromo && !showEducational) {
-      // Hide educational slides if educational are disabled
-      slide.style.display = "none";
-    } else {
-      // Show the slide
-      slide.style.display = "";
-    }
-  });
-  
-  // Update the dots indicator
-  updateDots();
-}
+        // Cycle through the possible states
+        if (showPromo && showEducational) {
+          // Switch to educational only
+          showPromo = false;
+          showEducational = true;
+          toggleBtn.textContent = "Show: Educational Only";
+        } else if (!showPromo && showEducational) {
+          // Switch to promotional only
+          showPromo = true;
+          showEducational = false;
+          toggleBtn.textContent = "Show: Promotional Only";
+        } else {
+          // Switch back to all slides
+          showPromo = true;
+          showEducational = true;
+          toggleBtn.textContent = "Show: All Slides";
+        }
 
-function updateDots() {
-  const dots = document.querySelectorAll(".dot");
-  const allSlides = document.querySelectorAll(".carousel-slide");
-  
-  // Hide all dots first
-  dots.forEach((dot, i) => {
-    dot.style.display = "none";
-  });
-  
-  // Show dots only for visible slides
-  let visibleDotIndex = 0;
-  allSlides.forEach((slide, i) => {
-    if (slide.style.display !== "none") {
-      dots[i].style.display = "";
-      visibleDotIndex++;
-    }
-  });
-}
+        // Update which slides are available
+        updateAvailableSlides();
+
+        // Go to the next available slide
+        goToNextAvailableSlide();
+
+        // Reset timer
+        resetTimer();
+      }
+      function goToNextAvailableSlide() {
+        const allSlides = document.querySelectorAll(".carousel-slide");
+        let nextAvailableIndex = 0;
+
+        // Find the next available slide
+        for (let i = 0; i < allSlides.length; i++) {
+          if (allSlides[i].style.display !== "none") {
+            nextAvailableIndex = i;
+            break;
+          }
+        }
+
+        showSlide(nextAvailableIndex);
+      }
+
+      function updateAvailableSlides() {
+        // Get all slides
+        const allSlides = document.querySelectorAll(".carousel-slide");
+
+        allSlides.forEach((slide) => {
+          const isPromo = slide.id.includes("promo");
+
+          if (isPromo && !showPromo) {
+            // Hide promo slides if promos are disabled
+            slide.style.display = "none";
+          } else if (!isPromo && !showEducational) {
+            // Hide educational slides if educational are disabled
+            slide.style.display = "none";
+          } else {
+            // Show the slide
+            slide.style.display = "";
+          }
+        });
+
+        // Update the dots indicator
+        updateDots();
+      }
+
+      function updateDots() {
+        const dots = document.querySelectorAll(".dot");
+        const allSlides = document.querySelectorAll(".carousel-slide");
+
+        // Hide all dots first
+        dots.forEach((dot, i) => {
+          dot.style.display = "none";
+        });
+
+        // Show dots only for visible slides
+        let visibleDotIndex = 0;
+        allSlides.forEach((slide, i) => {
+          if (slide.style.display !== "none") {
+            dots[i].style.display = "";
+            visibleDotIndex++;
+          }
+        });
+      }
 
       function createAccuracyChart(canvasId, target) {
         const ctx = document.getElementById(canvasId).getContext("2d");
@@ -747,21 +992,20 @@ function updateDots() {
       }
 
       function nextSlide() {
-  if (isPaused) return;
-  
-  const allSlides = document.querySelectorAll(".carousel-slide");
-  let nextIndex = (currentSlideIndex + 1) % totalSlides;
-  
-  // Keep looking for the next visible slide
-  while (allSlides[nextIndex].style.display === "none") {
-    nextIndex = (nextIndex + 1) % totalSlides;
-    
-    // Safety check to prevent infinite loop
-    if (nextIndex === currentSlideIndex) break;
-  }
-  
-  showSlide(nextIndex);
-}
+        if (isPaused) return;
+
+        let nextIndex = (currentSlideIndex + 1) % totalSlides;
+
+        // Keep looking for the next visible slide
+        while (slides[nextIndex].style.display === "none") {
+          nextIndex = (nextIndex + 1) % totalSlides;
+
+          // Safety check to prevent infinite loop
+          if (nextIndex === currentSlideIndex) break;
+        }
+
+        showSlide(nextIndex);
+      }
 
       function goToSlide(index) {
         showSlide(index);
@@ -789,16 +1033,45 @@ function updateDots() {
       }
 
       document.getElementById("nextBtn").addEventListener("click", function () {
-        const nextIndex = (currentSlideIndex + 1) % totalSlides;
+        let nextIndex = (currentSlideIndex + 1) % totalSlides;
+
+        
+        while (slides[nextIndex].style.display === "none") {
+          nextIndex = (nextIndex + 1) % totalSlides;
+          if (nextIndex === currentSlideIndex) break; 
+        }
+
         showSlide(nextIndex);
         resetTimer();
       });
 
       document.getElementById("prevBtn").addEventListener("click", function () {
-        const nextIndex = (currentSlideIndex - 1) % totalSlides;
-        showSlide(nextIndex);
+        let prevIndex = (currentSlideIndex - 1 + totalSlides) % totalSlides;
+
+        // Find the previous visible slide
+        while (slides[prevIndex].style.display === "none") {
+          prevIndex = (prevIndex - 1 + totalSlides) % totalSlides;
+          if (prevIndex === currentSlideIndex) break; // Prevent infinite loop
+        }
+
+        showSlide(prevIndex);
         resetTimer();
       });
+
+      function prevSlide() {
+        let prevIndex = (currentSlideIndex - 1 + totalSlides) % totalSlides;
+
+        // Keep looking for the previous visible slide
+        while (slides[prevIndex].style.display === "none") {
+          prevIndex = (prevIndex - 1 + totalSlides) % totalSlides;
+
+          // Safety check to prevent infinite loop
+          if (prevIndex === currentSlideIndex) break;
+        }
+
+        showSlide(prevIndex);
+        resetTimer();
+      }
 
       function changeSpeed() {
         const speedBtn = document.getElementById("speedBtn");
@@ -830,7 +1103,9 @@ function updateDots() {
         document
           .getElementById("speedBtn")
           .addEventListener("click", changeSpeed);
-        document.getElementById("toggleBtn").addEventListener("click", toggleSlideTypes);
+        document
+          .getElementById("toggleBtn")
+          .addEventListener("click", toggleSlideTypes);
       });
     </script>
   </body>
